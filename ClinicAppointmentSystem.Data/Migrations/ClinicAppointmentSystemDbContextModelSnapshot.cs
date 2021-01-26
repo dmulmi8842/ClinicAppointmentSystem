@@ -26,14 +26,26 @@ namespace ClinicAppointmentSystem.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
                     b.Property<int?>("DoctorId")
                         .HasColumnType("int");
+
+                    b.Property<string>("EndTime")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("PatientId")
                         .HasColumnType("int");
+
+                    b.Property<string>("StartTime")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -51,9 +63,6 @@ namespace ClinicAppointmentSystem.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int?>("AvailabilityId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("SpecializationId")
                         .HasColumnType("int");
 
@@ -64,8 +73,6 @@ namespace ClinicAppointmentSystem.Data.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AvailabilityId");
 
                     b.HasIndex("SpecializationId");
 
@@ -84,6 +91,9 @@ namespace ClinicAppointmentSystem.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("DoctorId")
+                        .HasColumnType("int");
+
                     b.Property<string>("EndTime")
                         .HasColumnType("nvarchar(max)");
 
@@ -94,6 +104,8 @@ namespace ClinicAppointmentSystem.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
 
                     b.ToTable("DoctorAvailabilities");
                 });
@@ -154,8 +166,8 @@ namespace ClinicAppointmentSystem.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int>("Name")
-                        .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -168,6 +180,9 @@ namespace ClinicAppointmentSystem.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
+
+                    b.Property<DateTime>("DOB")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -208,10 +223,6 @@ namespace ClinicAppointmentSystem.Data.Migrations
 
             modelBuilder.Entity("ClinicAppointmentSystem.Data.Entities.Doctor", b =>
                 {
-                    b.HasOne("ClinicAppointmentSystem.Data.Entities.DoctorAvailability", "Availability")
-                        .WithMany()
-                        .HasForeignKey("AvailabilityId");
-
                     b.HasOne("ClinicAppointmentSystem.Data.Entities.Specialization", "Specialization")
                         .WithMany()
                         .HasForeignKey("SpecializationId");
@@ -220,11 +231,18 @@ namespace ClinicAppointmentSystem.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId");
 
-                    b.Navigation("Availability");
-
                     b.Navigation("Specialization");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ClinicAppointmentSystem.Data.Entities.DoctorAvailability", b =>
+                {
+                    b.HasOne("ClinicAppointmentSystem.Data.Entities.Doctor", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId");
+
+                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("ClinicAppointmentSystem.Data.Entities.DoctorSpecialization", b =>

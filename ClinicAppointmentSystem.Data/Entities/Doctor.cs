@@ -10,6 +10,5 @@ namespace ClinicAppointmentSystem.Data.Entities
         public bool status { get; set; }
         public virtual User User { get; set; }
         public virtual Specialization Specialization { get; set; }
-        public virtual DoctorAvailability Availability { get; set; }
     }
 }

@@ -3,26 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ClinicAppointmentSystem.Data.Migrations
 {
-    public partial class FirstClinicAppointmentSystem : Migration
+    public partial class CreateDBForClinic : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "DoctorAvailabilities",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    StartTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EndTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsAvailable = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DoctorAvailabilities", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
@@ -42,7 +26,7 @@ namespace ClinicAppointmentSystem.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<int>(type: "int", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -59,6 +43,7 @@ namespace ClinicAppointmentSystem.Data.Migrations
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumber = table.Column<int>(type: "int", nullable: false),
+                    DOB = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RoleId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -99,18 +84,11 @@ namespace ClinicAppointmentSystem.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     status = table.Column<bool>(type: "bit", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: true),
-                    SpecializationId = table.Column<int>(type: "int", nullable: true),
-                    AvailabilityId = table.Column<int>(type: "int", nullable: true)
+                    SpecializationId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Doctors", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Doctors_DoctorAvailabilities_AvailabilityId",
-                        column: x => x.AvailabilityId,
-                        principalTable: "DoctorAvailabilities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Doctors_Specializations_SpecializationId",
                         column: x => x.SpecializationId,
@@ -145,11 +123,38 @@ namespace ClinicAppointmentSystem.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DoctorAvailabilities",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StartTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EndTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
+                    DoctorId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DoctorAvailabilities", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DoctorAvailabilities_Doctors_DoctorId",
+                        column: x => x.DoctorId,
+                        principalTable: "Doctors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Appointments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StartTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EndTime = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
                     DoctorId = table.Column<int>(type: "int", nullable: true),
                     PatientId = table.Column<int>(type: "int", nullable: true),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -182,9 +187,9 @@ namespace ClinicAppointmentSystem.Data.Migrations
                 column: "PatientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Doctors_AvailabilityId",
-                table: "Doctors",
-                column: "AvailabilityId");
+                name: "IX_DoctorAvailabilities_DoctorId",
+                table: "DoctorAvailabilities",
+                column: "DoctorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Doctors_SpecializationId",
@@ -218,16 +223,16 @@ namespace ClinicAppointmentSystem.Data.Migrations
                 name: "Appointments");
 
             migrationBuilder.DropTable(
-                name: "DoctorSpecializations");
+                name: "DoctorAvailabilities");
 
             migrationBuilder.DropTable(
-                name: "Doctors");
+                name: "DoctorSpecializations");
 
             migrationBuilder.DropTable(
                 name: "Patients");
 
             migrationBuilder.DropTable(
-                name: "DoctorAvailabilities");
+                name: "Doctors");
 
             migrationBuilder.DropTable(
                 name: "Specializations");

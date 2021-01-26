@@ -25,7 +25,11 @@ namespace ClinicAppointmentSystem.Controllers
             List<Appointment> appointments = new List<Appointment>();
             if (!string.IsNullOrEmpty(search))
             {
-                appointments = await _clinicAppointmentSystemDbContext.Appointments.Where(x => x.Notes.Contains(search) || x.Date.ToString().Contains(search) || x.Status.ToString().Contains(search) || x.Doctor.User.FirstName.Contains(search) || x.Doctor.User.LastName.Contains(search) || x.Doctor.User.DOB.ToString().Contains(search) || x.Patient.User.FirstName.Contains(search) || x.Patient.User.LastName.Contains(search) || x.Patient.User.DOB.ToString().Contains(search)).ToListAsync();
+                appointments = await _clinicAppointmentSystemDbContext.Appointments.Where(x => x.Notes.Contains(search) ||
+                x.Date.ToString().Contains(search) || x.Status.ToString().Contains(search) || x.Doctor.User.FirstName.Contains(search) ||
+                x.Doctor.User.LastName.Contains(search) || x.Doctor.User.DOB.ToString().Contains(search) ||
+                x.Patient.User.FirstName.Contains(search) || x.Patient.User.LastName.Contains(search) ||
+                x.Patient.User.DOB.ToString().Contains(search)).ToListAsync();
             }
             else
             {

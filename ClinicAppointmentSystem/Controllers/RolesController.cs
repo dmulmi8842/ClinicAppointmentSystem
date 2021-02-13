@@ -49,8 +49,12 @@ namespace ClinicAppointmentSystem.Controllers
         [HttpPost]
         public async Task<ActionResult<int>> Create([FromBody] Role role)
         {
-            _clinicAppointmentSystemDbContext.Roles.Add(role);
-            await _clinicAppointmentSystemDbContext.SaveChangesAsync();
+            var roleInDb = await _clinicAppointmentSystemDbContext.Roles.SingleOrDefaultAsync(x => x.Name.Contains(role.Name));
+            if (roleInDb != null) return BadRequest();
+            {
+                _clinicAppointmentSystemDbContext.Roles.Add(role);
+                await _clinicAppointmentSystemDbContext.SaveChangesAsync();
+            }
             return role.Id;
         }
 
@@ -58,10 +62,13 @@ namespace ClinicAppointmentSystem.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] Role role)
         {
+            var roleInDb = await _clinicAppointmentSystemDbContext.Roles.SingleOrDefaultAsync(x => x.Name.Contains(role.Name));
             if (id != role.Id) return BadRequest();
-
-            _clinicAppointmentSystemDbContext.Roles.Update(role);
-            await _clinicAppointmentSystemDbContext.SaveChangesAsync();
+            if (roleInDb != null) return BadRequest();
+            {
+                _clinicAppointmentSystemDbContext.Roles.Update(role);
+                await _clinicAppointmentSystemDbContext.SaveChangesAsync();
+            }
             return NoContent();
         }
 
